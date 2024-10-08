@@ -1,18 +1,15 @@
-import { useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import './App.css';
 
-function App() {
-
+function Window({id,containerRef,onClick}){
   const isClicked = useRef(false);
   const coord = useRef({startX: 0, startY: 0, lastX:0, lastY:0});
-
-  const containerRef = useRef(null);
+  const container = containerRef.current;
   const windowRef = useRef(null);
 
   useEffect(() =>{
-    if(!windowRef.current || !containerRef.current) return
+    if(!windowRef.current) return
     const window = windowRef.current;
-    const container = containerRef.current;
 
     const onMouseDown = (e) => {
       isClicked.current = true;
@@ -51,27 +48,40 @@ function App() {
     return cleanup;
   })
 
-  function closeWindow(){
-    console.log("clicked close")
-    windowRef.current.style.visibility = "hidden";
+  return( 
+  <div id={id} ref={windowRef} className='window'>
+    <button onClick={onClick}>X</button>
+    There is text in here.
+  </div>
+)
+
+  
+
+}
+
+function App() {
+
+  const [windows,setWindows] = useState([]);
+
+  function handleAddWindow(e)
+  {
+    if(windows.includes(e.target.id)) return
+    setWindows(w => [...w,e.target.id])
   }
 
-  function openWindow(){
-    console.log("clicked open")
-    windowRef.current.style.visibility = "visible";
+  function handleDeleteWindow(e)
+  {
+    setWindows(windows.filter((w)=>w!==e.target.parentNode.id))
   }
 
+  const containerRef = useRef(null);
 
   return (
     <main>
       <div ref={containerRef} className='container'>
-        <button onClick={openWindow}>window</button>
-        <div ref={windowRef} className='window'>
-          
-          <button onClick={closeWindow}>X</button>
-          <div></div>
-          There is text in here.
-        </div>
+        <button id="window" onClick={handleAddWindow}>window</button>
+        {windows.map((e)=><Window key={e} id={e} containerRef={containerRef} onClick={handleDeleteWindow}></Window>)}
+        
       </div>
     </main>
   );
