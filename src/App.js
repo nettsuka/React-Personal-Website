@@ -51,11 +51,27 @@ function App() {
     return cleanup;
   })
 
+  function closeWindow(){
+    console.log("clicked close")
+    windowRef.current.style.visibility = "hidden";
+  }
+
+  function openWindow(){
+    console.log("clicked open")
+    windowRef.current.style.visibility = "visible";
+  }
+
 
   return (
     <main>
       <div ref={containerRef} className='container'>
-        <div ref={windowRef} className='window'>There is text in here.</div>
+        <button onClick={openWindow}>window</button>
+        <div ref={windowRef} className='window'>
+          
+          <button onClick={closeWindow}>X</button>
+          <div></div>
+          There is text in here.
+        </div>
       </div>
     </main>
   );
